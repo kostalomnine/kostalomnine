@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html>  
+<script type="text/javascript" charset="utf-8" id="zm-extension"  async=""></script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Space </title>
+<div id='ro'>Space</div>
+    <style type="text/css">
+
+     #menu ul {
+  display: none;
+  background-color: #f90;
+  position: absolute;
+  top: 100%;
+}
+#menu li:hover ul { display: block; }
+#menu, #menu ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+#menu {
+  height: 30px;
+  background-color: #666;
+  padding-left: 25px;
+  min-width: 470px;
+}
+#menu li {
+  float: left;
+  position: relative;
+  height: 100%;
+}
+#menu li a {
+  display: block;
+  padding: 6px;
+  width: 100px;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+}
+#menu ul li { float: none; }
+#menu li:hover { background-color: #f90; }
+#menu ul li:hover { background-color: #666; }
+
+#ro {
+ font-size: 54px;
+}
+#ochki{
+ width: 150px;
+ font-weight: 450;
+ font-size: 28px;
+}
+#jizni{
+ width: 55px;
+ font-weight: 450;
+ font-size: 28px;
+}
+
+#timer {
+font-weight: 600;
+font-size: 28px;}
+
+#pause {
+margin-left: 230px;
+}
+
+.container{overflow:hidden;width:600px}
+.box{white-space:nowrap}
+.box div{width:90px;display:inline-block}
+}
+   </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="box">
+    <div id='timer' style='display:none'>Timer</div> 
+    <input id='ochki' style='display:none' type=text value = 0>
+    <input id='jizni' style='display:none' type=text value = 2>
+    <input id='pause' style='display:none' type="button" value='Pause' >
+  </div>
+</div>
+
+<div id =div style="display:block" class="container" width='600' height="400">
+ <ul id="menu">
+  <li><a id='input'   href="#">Начало игры</a></li>
+  <li><a id='pravila' href="#">Правила</a></li>
+  <li><a id='ship'    href="#">Корабли</a>
+  </li>
+</ul>
+</ul>
+
+<p id='p' style='display:none'> Добро пожаловать в игру "Space", для победы требуется уничтожить всех инопланетян при этом не быть убитым и уложиться в 20 секунд. Двигаться на стрелочки(влево,вправо), выстрел-пробел. У вас есть возможность выбрать из двух кораблей. Для начала игры нажмите кнопкну на панели меню "Начало игры".</p>
+
+<img id='img1' src="./imgs/ship1.png" style='display:none' width='69.7' height="70" >
+<img id='img2' src="./imgs/ship2.png" style='display:none' width='69.7' height="70" >
+
+<button style='display:none' id='but1'>Первый корабль</button>
+
+<button style='display:none' id='but2'>Второй корабль</button>
+
+</div>
+
+<canvas id="canvas" style='display:none'  width="600" height="400"></canvas>
+
+<script src="./game end_files/gamecore.js"></script>
+
+<script>
+var can = document.getElementById("canvas");
+var input = document.getElementById('input')
+var c = can.getContext("2d");
+var div = document.getElementById('div');
+var prav = document.getElementById('pravila');
+var p = document.getElementById('p');
+var ship = document.getElementById('ship');
+var but1 = document.getElementById('but1');
+var but2 = document.getElementById('but2');
+var img1 = document.getElementById('img1');
+var img2 = document.getElementById('img2');
+var divchik = document.getElementById('ro');
+var timer = document.getElementById('timer');
+var ochki = document.getElementById('ochki'); 
+var jizni = document.getElementById('jizni');
+var pauza = document.getElementById('pause');
+var health=100;
+var schet = 0;
+var pause = false;
+
+jizni.value = health;
+
+game.state = '';
+player.width = 46;
+player.height = 46;
+
+var ship_image;
+var bomb_image;
+var bullet_image;
+var ship_select = 'imgs/hunter1.png';
+
+
+
+// Меню и всякие преколы(миллион переменных и скрытий/раскрытий)
+
+input.addEventListener('click', function()
+{
+    can.style = 'display:block';
+    input.style = 'display:none';  
+    div.style = 'display:none';  
+    p.style = 'display:none';   
+    game.state = 'start';
+    divchik.style = 'display:none';
+    timer.style='display:inline-block';
+    ochki.style='display:inline-block';
+    jizni.style='display:inline-block';
+    pauza.style='display:inline-block';
+    refresh();
+});
+
+prav.addEventListener('click', function(){
+ p.style = 'display:block';
+ but1.style = 'display:none';
+ but2.style = 'display:none';
+ img1.style = 'display:none';
+ img2.style = 'display:none';
+});
+
+ship.addEventListener('click', function(){
+ but1.style = 'display:block';
+ but2.style = 'display:block';
+ img1.style = 'display:block';
+ img2.style = 'display:block';
+ p.style = 'display:none';
+
+});
+
+but1.addEventListener('click', function(){
+ship_select = "imgs/hunter1.png";
+console.log(ship_select);
+loadResources();
+});
+
+but2.addEventListener('click', function(){
+ship_select = "imgs/hunter2.png";
+console.log(ship_select);
+loadResources();
+});
+
+
+// --------------- Таймер
+var sec=20;
+var min=0;
+
+function refresh()
+{
+    sec--;
+    if(sec==-1){sec=59; min=min-1;}
+    else{min=min;}
+    if(sec<=9){sec="0" + sec;}
+    time=(min<=9 ? "0"+min : min) + ":" + sec;
+    if(document.getElementById){timer.innerHTML=time;}
+    inter=setTimeout("refresh()", 1000);
+    // действие, если таймер 00:00
+    if(min=='00' && sec=='00'){
+        sec="00";
+        clearInterval(inter);  
+            
+    }
+}
+//--------------------
+
+loadResources();
+
+function loadResources() {
+    ship_image = new Image();
+    ship_image.src = ship_select;
+    
+    bomb_image = new Image();
+    bomb_image.src = "imgs/bomb.png";
+    
+    bullet_image = new Image();
+    bullet_image.src = "imgs/bullets.png";
+
+    phon_image = new Image();
+    phon_image.src = 'imgs/phon.jpg';
+    
+}
+
+function mainLoop() {
+    if(pause == false){
+	var c = can.getContext('2d');
+
+
+	updateGame();
+	updateBackground();
+	updateEnemies();
+    
+	updatePlayer();
+	
+	updatePlayerBullets();
+	updateEnemyBullets();
+
+	checkCollisions();
+	
+   
+	drawBackground(c);
+	drawEnemies(c);
+	drawPlayer(c);
+	drawEnemyBullets(c);
+	drawPlayerBullets(c);
+	drawOverlay(c);
+
+    }
+}
+//----------ПАУЗА------------
+
+pauza.addEventListener('click', function(){
+    if(pause== false) {pause=true;  clearInterval(inter);}
+
+    else if (pause == true){ pause=false; refresh();}
+});
+
+
+// =========== player ============
+
+function firePlayerBullet() {
+	//create a new bullet
+	playerBullets.push({
+		x: player.x+14,
+		y: player.y - 5,
+		width:20,
+		height:20,
+		counter:0,
+
+	});
+    console.log(jizni.value);
+  //  jizni.value =  Number(jizni.value)+ 1;
+}
+
+function drawPlayer(c) {
+    if(player.state == "dead") return;
+    
+    if(player.state == "hit") {
+        drawPlayerExplosion(c);
+
+    	    return;
+	}
+	c.drawImage(ship_image, 
+	    25,1, 23,23, //src coords
+	    player.x, player.y, player.width, player.height //dst coords
+	    );
+}
+
+var particles = [];
+function drawPlayerExplosion(c) {
+    //start
+    if(player.counter == 0) {
+        particles = []; //clear any old values
+        for(var i = 0; i<50; i++) {
+            particles.push({
+                    x: player.x + player.width/2,
+                    y: player.y + player.height/2,
+                    xv: (Math.random()-0.5)*2.0*5.0,  // x velocity
+                    yv: (Math.random()-0.5)*2.0*5.0,  // y velocity
+                    age: 0,
+            });
+        }
+    }
+    
+    //update and draw
+    if(player.counter > 0) {
+        for(var i=0; i<particles.length; i++) {
+            var p = particles[i];
+            p.x += p.xv;
+            p.y += p.yv;
+            var v = 255-p.age*3;
+            c.fillStyle = "rgb("+v+","+v+","+v+")";
+            c.fillRect(p.x,p.y,3,3);
+            p.age++;
+        }
+    }
+};
+
+function drawPlayerBullets(c) {
+	c.fillStyle = "blue";
+	for(i in playerBullets) {
+		var bullet = playerBullets[i];
+		var count = Math.floor(bullet.counter/4);
+		var xoff = (count%4)*24;
+		
+		//c.fillRect(bullet.x, bullet.y, bullet.width,bullet.height);
+		c.drawImage(
+		    bullet_image,
+		    xoff+10,0+9,8,8,//src
+		    bullet.x,bullet.y,bullet.width,bullet.height//dst
+		    );
+	}
+}
+
+
+// =========== background ============
+
+function drawBackground(c) {
+	c.fillStyle = "black";
+	c.fillRect(0,0,can.width,can.height);
+
+    c.drawImage(
+        phon_image,0,0, can.width,can.height);
+
+   // c.drawImage(ship_image, 
+     //   25,1, 23,23, //src coords
+      //  player.x, player.y, player.width, player.height //dst coords
+      //  );
+}
+
+
+
+// =========== enemies ===============
+
+function drawEnemies(c) {
+    for(var i in enemies) {
+        var enemy = enemies[i];
+        if(enemy.state == "alive") {
+            c.fillStyle = "green";
+            drawEnemy(c,enemy,15);
+        }
+        if(enemy.state == "hit") {
+            c.fillStyle = "red";
+            enemy.shrink--;
+            drawEnemy(c,enemy,enemy.shrink);
+
+        }
+        //this probably won't ever be called.
+        if(enemy.state == "dead") {
+            c.fillStyle = "black";
+            c.drawEnemy(c,enemy,15);
+
+        }
+    }
+}
+
+function drawEnemy(c,enemy,radius) {
+    if(radius <=0) radius = 1;
+    var theta = enemy.counter;        
+    c.save();
+    c.translate(0,30);
+    //draw the background circle
+    circlePath(c, enemy.x, enemy.y, radius*2);
+    c.fill();
+    //draw the wavy dots
+    for(var i=0; i<10; i++) {
+        var xoff = Math.sin(toRadians(theta+i*36*2))*radius;
+        var yoff = Math.sin(toRadians(theta+i*36*1.5))*radius;
+        circlePath(c, enemy.x + xoff, enemy.y + yoff, 3);
+        c.fillStyle = "white";
+        c.fill();
+    }
+    c.restore();
+}
+function toRadians(d) {
+    return d * Math.PI * 2.0 / 360.0;
+}
+function circlePath(c, x, y, r) {
+    c.beginPath();
+    c.moveTo(x,y);
+    c.arc(x,y, r, 0, Math.PI*2);    
+}
+
+
+function createEnemyBullet(enemy) {
+    return {
+        x:enemy.x,
+        y:enemy.y+enemy.height,
+        width:30,
+        height:30,
+        counter:0,
+    }
+}
+
+function drawEnemyBullets(c) {
+    for(var i in enemyBullets) {
+        var bullet = enemyBullets[i];
+        var xoff = (bullet.counter%10)*12 + 1;
+        var yoff = 1;
+        c.drawImage(bomb_image,
+            xoff,yoff,11,11,//src
+            bullet.x,bullet.y,bullet.width,bullet.height//dest
+            );
+    }
+}
+
+
+
+
+
+// =========== overlay ===============
+
+function drawOverlay(c) {
+    if(overlay.counter == -1) return;
+    
+    //fade in
+    var alpha = overlay.counter/50.0;
+    if(alpha > 1) alpha = 1;
+    c.globalAlpha = alpha;
+    
+    c.save();
+    c.fillStyle = "white";
+    c.font = "Bold 40pt Arial";
+    c.fillText(overlay.title,140,200);
+    c.font = "14pt Arial";
+    c.fillText(overlay.subtitle, 190,250);
+    c.restore();
+}
+
+doSetup();
+setInterval(mainLoop,1000/30);
+
+
+
+
+
+</script>
+
+
+</body></html>

@@ -1,0 +1,57 @@
+  <!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="utf-8"/>
+		<title>Склад складом</title>
+		
+	</head>
+	<body>
+
+<div>
+    <h1>Дистанционное обучение</h1>
+</div>
+
+  <form >
+
+    <div>
+      <label for='name'>Студент</label>
+      <input id='name' type='text' name="name" >
+    </div>
+
+    <div>
+
+      <span>Пол</span>
+      <label>
+          <input id= myzh type="radio" name="sex" value="мужской">мужской
+          
+          <div class="radio-control male"></div>
+      </label>
+
+      <label>
+        <input id='zhen' type="radio" name="sex" value="женский">женский
+        <div class="radio-control female"></div>
+      </label>
+
+    </div>
+
+    <div>
+      <label for="country">Количество заданий, которые задают по всем предметам, на одну неделю, которых так много, что мы начали вести список всех заданий, чтобы не путаться и не терять их, а всё потому что преподаватели не корректируют выдачу заданий с друг другом и выдают суммрно 10 заданий на 5 дней и все сдачи ставят с разницей в 1 день(в лучшем случае 2 дня):</label>
+
+      <!-- Я понимаю что преподавателям сложно координироваться, просто небольшой крик души. Я понимаю что у вас еженедельная отчётность, поэтому так все преподаватели и закидывают нас на неделю.-->
+      <br>
+      <select id='select' name="country">
+        <option value="10">10</option> 
+        <option value="12">12</option> 
+        <option value="1000000">Миллион</option> 
+      </select> 
+      <div class="select-arrow"></div> 
+    </div> 
+
+    <button type="submit">Отправить</button> 
+  </form> 
+</div>
+    
+		<script type="text/javascript" src="script.js"></script>
+	</body>
+</html>

@@ -1,0 +1,19 @@
+  <!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Да да я</title>
+	</head>
+	<body>
+
+<div id="app">
+  <p> Ваш родной язык: </p>
+  <input name="radio" type="radio" v-model="type" value="Английский">En
+  <input name="radio" type="radio" v-model="type" value="Русский">Ru
+  <input name="radio" type="radio" v-model="type" value="Француский">Fran
+  <p>Вы выбрали: {{ type }}</p>
+</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script type="text/javascript" src="script.js"></script>
+	</body>
+</html>

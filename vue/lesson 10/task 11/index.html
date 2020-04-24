@@ -1,0 +1,19 @@
+  <!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Да да я</title>
+	</head>
+	<body>
+
+<div id="app">
+	<p>Вы зашли в магазин, потому что кончились вкусняхи к кино</p>
+	<select v-model="selected">
+		<option v-for='option in options'>{{ option }}</option>
+	</select>
+	<p>Вы выбрали еду и оплатили, теперь вы счастливы с {{ selected }}</p>
+</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script type="text/javascript" src="script.js"></script>
+	</body>
+</html>

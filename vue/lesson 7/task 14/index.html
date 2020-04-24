@@ -1,0 +1,23 @@
+  <!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Да да я</title>
+	</head>
+	<body>
+
+<div id='app'>
+		<button v-on:click="toggleElem">
+		{{ show ? 'Скрыть' : 'Показать' }}
+	</button>
+<template v-if='show==true'>
+  <p>Я пытаюсь</p>
+  <p>что-то</p>
+  <p>спрятать</p>
+</template>
+</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script type="text/javascript" src="script.js"></script>
+	</body>
+</html>
